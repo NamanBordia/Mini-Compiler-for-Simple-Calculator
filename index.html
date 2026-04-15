@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Mini Compiler</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="background-effects">
+        <div class="blur-blob purple"></div>
+        <div class="blur-blob blue"></div>
+        <div class="blur-blob cyan"></div>
+    </div>
+
+    <header class="hero">
+        <div class="team-container glass">
+            <div class="team-member">Naman Bordia <span class="usn">1RVU23CSE296</span></div>
+            <div class="team-member">Naman Kumar <span class="usn">1RVU23CSE297</span></div>
+            <div class="team-member">Poorna V M <span class="usn">1RVU23CSE336</span></div>
+            <div class="team-member">Manya Jain <span class="usn">1RVU23CSE258</span></div>
+        </div>
+        <h1 class="glow-text">How Code Works:<br><span class="accent">The Compiler</span></h1>
+        <p class="subtitle">Tracing an expression from source to machine instructions in 4 phases.</p>
+        <div class="code-showcase glass" id="hero-equation">
+            <code><span class="kw">result</span> <span class="op">=</span> <span class="punc">(</span><span class="var">a</span> <span class="op">+</span> <span class="var">b</span><span class="punc">)</span> <span class="op">*</span> <span class="punc">(</span><span class="var">c</span> <span class="op">-</span> <span class="var">d</span><span class="punc">)</span> <span class="op">/</span> <span class="var">e</span></code>
+        </div>
+        <div class="scroll-prompt">
+            <span>Scroll to begin</span>
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- PHASE 1 -->
+        <section id="basics" class="phase-section fade-in">
+            <div class="section-label">Phase 1</div>
+            <h2>Introduction & Basics</h2>
+            <p class="lead">Every time you write a program — whether it's in C, Java, or Python — you're writing
+                something a human can read. But the computer only understands binary: zeros and ones. So how does your
+                code actually become something the machine can run? The answer is a <strong>compiler</strong>.</p>
+            <p class="lead mt-4">Today, our team is going to build a mini compiler — from scratch — for arithmetic
+                expressions. And we're going to trace one single expression through every stage of the compilation
+                process.</p>
+
+            <div class="cards-grid">
+                <div class="card glass">
+                    <div class="card-icon compiler-icon">🗜️</div>
+                    <h3>Compiler</h3>
+                    <p>Reads the entire program at once, translates it completely, and produces an independent
+                        executable file. Like translating a whole book before publishing.</p>
+                    <div class="tags"><span class="tag tag-c">C / C++</span><span class="tag tag-java">Java</span></div>
+                </div>
+                <div class="card glass">
+                    <div class="card-icon interpreter-icon">⚡</div>
+                    <h3>Interpreter</h3>
+                    <p>Reads and executes code line by line in real time. No separate output file is produced. Like a
+                        live translator during a global summit speech.</p>
+                    <div class="tags"><span class="tag tag-py">Python</span><span class="tag tag-js">JavaScript</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phases-timeline glass mt-12">
+                <h3>The Compilation Pipeline</h3>
+                <div class="timeline">
+                    <div class="timeline-step">
+                        <div class="step-num">1</div>
+                        <h4>Lexical Analysis</h4>
+                        <p>Breaks code into Tokens</p>
+                    </div>
+                    <div class="timeline-line"></div>
+                    <div class="timeline-step">
+                        <div class="step-num">2</div>
+                        <h4>Parsing</h4>
+                        <p>Builds Abstract Syntax Tree</p>
+                    </div>
+                    <div class="timeline-line"></div>
+                    <div class="timeline-step">
+                        <div class="step-num">3</div>
+                        <h4>Intermediate Code</h4>
+                        <p>Generates platform-independent TAC</p>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="detailed-text glass mt-12" style="padding: 2rem; border-radius: 8px;">
+                <h3 style="margin-bottom: 1rem; color: var(--accent-purple);">Why this expression?</h3>
+                <div class="code-showcase glass text-center" style="margin-bottom: 1.5rem; display: inline-block;">
+                    <code><span class="kw">result</span> <span class="op">=</span> <span class="punc">(</span><span class="var">a</span> <span class="op">+</span> <span class="var">b</span><span class="punc">)</span> <span class="op">*</span> <span class="punc">(</span><span class="var">c</span> <span class="op">-</span> <span class="var">d</span><span class="punc">)</span> <span class="op">/</span> <span class="var">e</span></code>
+                </div>
+                <p class="text-main" style="font-size: 1.1rem;">Because it has everything that makes a compiler
+                    interesting:</p>
+                <ul style="margin: 1rem 0 1rem 2rem; color: var(--text-dim); line-height: 1.8;">
+                    <li>It has <strong>parentheses</strong> — which force grouping.</li>
+                    <li>It has <strong>multiple operators</strong> — addition, subtraction, multiplication, and division
+                        — each with different precedence.</li>
+                    <li>It has <strong>five variables</strong> and an <strong>assignment</strong>.</li>
+                </ul>
+                <p class="text-gray" style="font-size: 1.1rem;">This means the compiler has real work to do at every
+                    stage. You'll see the same expression transform — first into 15 tokens, then into an abstract syntax
+                    tree, and finally into clean intermediate code.</p>
+            </div>
+        </section>
+
+        <!-- PHASE 2 -->
+        <section id="lexical" class="phase-section fade-in">
+            <div class="section-label">Phase 2</div>
+            <h2>Lexical Analysis (Scanner)</h2>
+            <p class="lead">Thank you. I'm the Scanner — the very first phase of the compiler. My job is to read the
+                source code character by character and split it into <strong>tokens</strong>.</p>
+            <p class="lead mt-4">Think of it like reading a sentence and identifying every word, punctuation mark, and
+                symbol separately. You don't process 'The cat sat' as one lump — you see three distinct words. I do the
+                same thing for code. A token is the smallest meaningful unit in the language — an identifier, a number,
+                an operator, a parenthesis. All whitespace is discarded — spaces have no meaning here.</p>
+
+            <div class="interactive-panel glass mt-8">
+                <div class="panel-header">
+                    <div>
+                        <h3>Scanner Engine</h3>
+                        <p class="text-sm">Regular Expressions & Finite Automata at work.</p>
+                    </div>
+                    <div class="btn-group">
+                        <button id="scan-btn" class="btn primary">Scan Next Token</button>
+                        <button id="scan-all-btn" class="btn outline">Scan All</button>
+                    </div>
+                </div>
+
+                <div class="expression-tracker glass mt-4">
+                    <h4 class="text-sm uppercase text-gray">Source Stream:</h4>
+                    <div id="lex-expression" class="mono-text">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
+                <div class="tokens-layout mt-6">
+                    <div class="tokens-table-wrapper custom-scrollbar">
+                        <table class="tokens-table">
+                            <thead>
+                                <tr>
+                                    <th>Token</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tokens-body">
+                                <!-- Tr generated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="theory-box glass">
+                        <div class="emoji-heading">💡 How it matches tokens</div>
+                        <p>The scanner uses a <strong>Finite Automata</strong>. It starts in an initial state, stringing
+                            characters together.</p>
+                        <p>When it sees <code>r</code>, <code>e</code>, <code>s</code>, <code>u</code>, <code>l</code>,
+                            <code>t</code>, it stays in the "Identifier" state. Upon hitting a space or <code>=</code>,
+                            it reaches an accepting state, emits the token <code>ID(result)</code>, and resets.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 3 -->
+        <section id="parsing" class="phase-section fade-in">
+            <div class="section-label">Phase 3</div>
+            <h2>Parsing</h2>
+            <p class="lead">I've received the token stream. Now my job is to answer two questions: Is this expression
+                grammatically valid? And what is the correct structure?</p>
+            <p class="lead mt-4">Parsing is about understanding <strong>relationships</strong>. The tokens alone don't
+                tell you whether <code>*</code> should happen before <code>+</code>, or which operands belong to which
+                operator. The parser figures that out using a formal grammar — a set of rules about how expressions are
+                structured.</p>
+
+            <div class="grammar-rules glass mt-8">
+                <h4>Grammar Precedence Rules</h4>
+                <div class="rules-flex">
+                    <div class="rule-box">
+                        <span class="rule-title">Expression</span>
+                        <span class="rule-desc">Joined by <code>+</code> or <code>-</code> (Lowest)</span>
+                    </div>
+                    <div class="rule-arrow">→</div>
+                    <div class="rule-box">
+                        <span class="rule-title">Term</span>
+                        <span class="rule-desc">Joined by <code>*</code> or <code>/</code> (Medium)</span>
+                    </div>
+                    <div class="rule-arrow">→</div>
+                    <div class="rule-box">
+                        <span class="rule-title">Factor</span>
+                        <span class="rule-desc">Variables, Numbers, or <code>( )</code> (Highest)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="theory-box glass mt-8">
+                <p>Because terms are nested inside expressions, <code>*</code> and <code>/</code> bind more tightly than
+                    <code>+</code> and <code>-</code>. And parentheses, being factors themselves, override everything —
+                    they force their contents to be evaluated first.</p>
+            </div>
+
+
+            <div class="interactive-panel glass mt-8 tree-panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>AST Builder</h3>
+                        <p class="text-sm" id="ast-status-text">Building `result = (a + b) * (c - d) / e`</p>
+                    </div>
+                    <div class="btn-group">
+                        <button id="build-ast-btn" class="btn primary">Add Next Node</button>
+                    </div>
+                </div>
+
+                <div class="tree-container custom-scrollbar">
+                    <div class="tree">
+                        <ul id="ast-root">
+                            <li>
+                                <div class="node assign-node" data-target="0"><span class="op">=</span></div>
+                                <ul>
+                                    <li>
+                                        <div class="node leaf" data-target="1">result</div>
+                                    </li>
+                                    <li>
+                                        <div class="node div-node" data-target="2"><span class="op">/</span></div>
+                                        <ul>
+                                            <li>
+                                                <div class="node mul-node" data-target="3"><span class="op">*</span>
+                                                </div>
+                                                <ul>
+                                                    <li>
+                                                        <div class="node add-node" data-target="4"><span
+                                                                class="op">+</span></div>
+                                                        <ul>
+                                                            <li>
+                                                                <div class="node leaf" data-target="5">a</div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="node leaf" data-target="6">b</div>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <div class="node sub-node" data-target="7"><span
+                                                                class="op">-</span></div>
+                                                        <ul>
+                                                            <li>
+                                                                <div class="node leaf" data-target="8">c</div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="node leaf" data-target="9">d</div>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <div class="node leaf" data-target="10">e</div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 4 -->
+        <section id="tac" class="phase-section fade-in">
+            <div class="section-label">Phase 4</div>
+            <h2>Intermediate Code Gen</h2>
+            <p class="lead">Thank you. I have the AST, and my job is to flatten it into a sequence of simple
+                instructions that a machine can eventually execute. We call this <strong>Three Address Code</strong>, or
+                TAC.</p>
+            <p class="lead mt-4">Each instruction has the form: <code>result = operand1 operator operand2</code>. At
+                most one operation per line. Temporary variables — <code>t1</code>, <code>t2</code>, etc. — are used to
+                hold intermediate results.</p>
+            <p class="lead mt-4">Why not go straight to machine code? Because intermediate code is
+                <strong>platform-independent</strong>. The same TAC can be compiled to x86, ARM, or any other
+                architecture. It's also where optimizations happen in real compilers.</p>
+
+            <div class="tac-grid mt-8">
+                <div class="interactive-panel glass">
+                    <div class="panel-header">
+                        <h3>TAC Generator</h3>
+                        <button id="gen-tac-btn" class="btn primary">Traverse Next Node</button>
+                    </div>
+                    <div class="tac-explainer box-highlight mt-4" id="tac-explainer">
+                        Ready to start traversal. Starting from the deepest leaves.
+                    </div>
+                    <div class="tac-code-block mt-4">
+                        <div class="mono-text" id="tac-output"></div>
+                    </div>
+                </div>
+                <div class="quadruples-panel glass">
+                    <h3>Quadruples Table</h3>
+                    <p class="text-sm text-gray mb-4">A standard tabular representation for compilers.</p>
+                    <table class="tokens-table">
+                        <thead>
+                            <tr>
+                                <th>Op</th>
+                                <th>Arg1</th>
+                                <th>Arg2</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quad-body">
+                            <!-- JS injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="detailed-text glass mt-12"
+                style="padding: 2rem; border-left: 4px solid var(--accent-blue); border-radius: 8px;">
+                <h3 style="margin-bottom: 0.5rem;">Conclusion</h3>
+                <p class="text-main" style="font-size: 1.1rem; margin-bottom: 1rem;">And that's our complete mini
+                    compiler. <code>result = (a + b) * (c - d) / e</code> — one expression, four phases, four people.
+                </p>
+                <p class="text-gray" style="font-size: 1.05rem; line-height: 1.6;">Person 1 gave you the theory. Person
+                    2 scanned it into 15 tokens. Person 3 parsed it into a structured tree. And I converted that tree
+                    into 5 lines of Three Address Code.<br><br>This is the heart of how every real compiler works. Thank
+                    you.</p>
+            </div>
+        </section>
+
+        <footer class="glass-footer">
+            <p>Made with passion for the <strong>Compiler Design Presentation</strong></p>
+            <p class="text-sm text-gray">Naman B. • Naman K. • Poorna V. M. • Manya J.</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
