@@ -18,7 +18,11 @@
         <div class="blur-blob cyan"></div>
     </div>
 
-    <header class="hero">
+    <div class="fixed-logo">
+        <img src="rvl.png" alt="RVU Logo" onerror="this.outerHTML='<div class=\\'logo-placeholder\\'>RVU</div>'">
+    </div>
+
+    <header class="hero" style="padding-top: 100px;">
         <div class="team-container glass">
             <div class="team-member">Naman Bordia <span class="usn">1RVU23CSE296</span></div>
             <div class="team-member">Naman Kumar <span class="usn">1RVU23CSE297</span></div>
@@ -161,7 +165,8 @@
                             characters together.</p>
                         <p>When it sees <code>r</code>, <code>e</code>, <code>s</code>, <code>u</code>, <code>l</code>,
                             <code>t</code>, it stays in the "Identifier" state. Upon hitting a space or <code>=</code>,
-                            it reaches an accepting state, emits the token <code>ID(result)</code>, and resets.</p>
+                            it reaches an accepting state, emits the token <code>ID(result)</code>, and resets.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -201,7 +206,8 @@
             <div class="theory-box glass mt-8">
                 <p>Because terms are nested inside expressions, <code>*</code> and <code>/</code> bind more tightly than
                     <code>+</code> and <code>-</code>. And parentheses, being factors themselves, override everything —
-                    they force their contents to be evaluated first.</p>
+                    they force their contents to be evaluated first.
+                </p>
             </div>
 
 
@@ -289,7 +295,8 @@
                 hold intermediate results.</p>
             <p class="lead mt-4">Why not go straight to machine code? Because intermediate code is
                 <strong>platform-independent</strong>. The same TAC can be compiled to x86, ARM, or any other
-                architecture. It's also where optimizations happen in real compilers.</p>
+                architecture. It's also where optimizations happen in real compilers.
+            </p>
 
             <div class="tac-grid mt-8">
                 <div class="interactive-panel glass">
